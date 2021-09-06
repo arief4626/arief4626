@@ -177,21 +177,29 @@
       </div>
   </div>
   <div class="col-md-8"></div>
-  <form>
+  <div class="alert alert-success alert-dismissible fade show d-none my-alert" role="alert">
+    <strong>Thanks!</strong> We have received your comment.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  <form name="wpu-contact-form">
   <div class="mb-3">
     <label for="name" class="form-label">Nama lengkap</label>
-    <input type="text" class="form-control" id="name" aria-describedby="name">
+    <input type="text" class="form-control" id="name" aria-describedby="name" name="nama">
   </div>
   <div class="mb-3">
     <label for="email" class="form-label">email</label>
-    <input type="email" class="form-control" id="email" aria-describedby="email">
+    <input type="email" class="form-control" id="email" aria-describedby="email" name="email">
     <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
   </div>
   <div class="form-floating">
-    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" name="pesan"></textarea>
     <label for="floatingTextarea">Comments</label>
   </div>
-  <button type="submit" class="btn btn-success">Submit</button>
+  <button type="submit" class="btn btn-primary btn-kirim">Submit</button>
+  <button class="btn btn-primary btn-loading d-none" type="button" disabled>
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    Loading...
+  </button>
 </form>
 <br>
 <!-- akhir contact -->
@@ -202,5 +210,32 @@
 <!-- </footer> -->
 <!-- akhir footer -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
-  </body>
+<script>
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbyeJY5pETkjlxyAezl3GCTNG2MIgvdqqQofRnT18g3qISH85J9C9h8_JUb2bp0i3EtU/exec'
+  const form = document.forms['wpu-contact-form']
+  const btnKirim = document.querySelector ('.btn-kirim');
+  const btnLoading = document.querySelector ('.btn-loading');
+  const myAlert = document.querySelector ('.my-alert');
+
+  form.addEventListener('submit', e => {
+    e.preventDefault()
+    // submit click
+    // show loading, non submit button
+    btnLoading.classList.toggle('d-none');
+    btnKirim.classList.toggle('d-none');
+fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+      .then(response => {
+        // show submit , non loading button
+        btnLoading.classList.toggle('d-none');
+        btnKirim.classList.toggle('d-none');
+        // show notif 
+        myAlert.classList.toggle('d-none');
+        // reset form
+        form.reset();
+        console.log('Success!', response)
+      })
+      .catch(error => console.error('Error!', error.message))
+  })
+</script>
+</body>
 </html>
